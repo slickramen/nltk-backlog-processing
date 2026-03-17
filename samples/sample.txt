@@ -1,0 +1,52 @@
+Sprint Backlog - Todo App (Sprint 5)
+
+
+User Stories
+- As a user, I want to create a new task so that I can track things I need to do
+- As a user, I want to edit existing tasks so that I can update details
+- As a user, I want to delete tasks so that I can remove completed or irrelevant items
+- As a user, I want to mark tasks as complete so that I can track progress
+- As a user, I want to set due dates so that I can manage deadlines
+- As a user, I want to organize tasks into categories so that I can group related items
+- As a user, I want to search for tasks so that I can quickly find specific items
+- As a user, I want to filter tasks by status so that I can view completed or pending items
+- As a user, I want to receive notifications for upcoming deadlines so that I don't miss tasks
+- As a user, I want to sync my tasks across devices so that I can access them anywhere
+
+
+Tasks / Engineering Work
+- Implement REST API endpoint for task creation
+- Add validation for task input fields (title, description, due date)
+- Design database schema for tasks and categories
+- Create UI components for task list and task item
+- Implement drag-and-drop reordering of tasks
+- Add unit tests for task service layer
+- Integrate notification service for reminders
+- Optimize database queries for task filtering
+- Optimize database query for task filtering
+- Implement authentication middleware for user sessions
+- Refactor state management for task updates
+
+
+Bugs / Fixes
+- Fix issue where completed tasks are not persisting after refresh
+- Resolve crash when deleting a task with no ID
+- Fix UI alignment issue on mobile devices
+- Correct timezone bug affecting due dates
+- Fix duplicate tasks appearing after sync
+
+
+Enhancements / Improvements
+- Improve loading performance of task list
+- Add dark mode support
+- Enhance accessibility for screen readers
+- Improve error handling and user feedback messages
+- Add animations for task completion
+
+
+Technical Debt
+- Refactor legacy task controller logic
+- Remove unused API endpoints
+- Improve code coverage for backend services
+- Standardize naming conventions across modules
+- Update outdated dependencies
