@@ -6,7 +6,7 @@ Categorises scrum backlog tasks by:
   2. Implementation   - controller, service, repository, API, UI component, etc.
   3. Core concepts    - auth, CRUD, REST, state management, validation, etc.
 
-Uses NLTK for tokenisation, stop-word removal, and lemmatisation, then applies
+Uses NLTK for tokenisation, stop-word removal, and stemming, then applies
 keyword/pattern matching against curated taxonomy dictionaries.
 """
 
@@ -14,7 +14,7 @@ import re
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
+from nltk.stem import PorterStemmer
 
 # ---------------------------------------------------------------------------
 # Download required NLTK data (safe to run multiple times)
@@ -23,15 +23,31 @@ for pkg in ("punkt", "stopwords", "wordnet", "omw-1.4", "punkt_tab"):
     nltk.download(pkg, quiet=True)
 
 # ---------------------------------------------------------------------------
-# Taxonomy dictionaries
+# Stemmer
 # ---------------------------------------------------------------------------
 
-STACK_KEYWORDS = {
+stemmer = PorterStemmer()
+
+def stem_set(kws: set) -> set:
+    """Stem a flat keyword set."""
+    return {stemmer.stem(w) for w in kws}
+
+def stem_keyword_dict(kws: dict | set) -> dict | set:
+    """Stem keyword sets — handles both flat sets and strong/weak dicts."""
+    if isinstance(kws, dict):
+        return {key: stem_set(val) for key, val in kws.items()}
+    return stem_set(kws)
+
+# ---------------------------------------------------------------------------
+# Taxonomy dictionaries  (defined in plain English, stemmed at startup)
+# ---------------------------------------------------------------------------
+
+_STACK_KEYWORDS_RAW = {
     "frontend": {
         "ui", "interface", "component", "button", "form", "modal", "page",
         "view", "template", "css", "style", "layout", "responsive", "display",
         "render", "react", "angular", "vue", "html", "dom", "client",
-        "dashboard", "navbar", "sidebar", "popup", "toast", "table", 
+        "dashboard", "navbar", "sidebar", "popup", "toast", "table",
     },
     "backend": {
         "api", "endpoint", "controller", "service", "repository", "database",
@@ -42,7 +58,7 @@ STACK_KEYWORDS = {
     },
 }
 
-IMPLEMENTATION_KEYWORDS = {
+_IMPLEMENTATION_KEYWORDS_RAW = {
     "controller":   {"controller", "route", "endpoint", "request", "response", "handler"},
     "service":      {"service", "logic", "business", "process", "calculate", "compute"},
     "repository":   {"repository", "repo", "dao", "database", "query", "crud", "persist", "store"},
@@ -56,71 +72,77 @@ IMPLEMENTATION_KEYWORDS = {
     "config":       {"config", "configuration", "environment", "env", "setting", "setup"},
 }
 
-CONCEPT_KEYWORDS = {
-    "authentication":    {"login", "logout", "signin", "signup", "authenticate", "auth",
-                          "jwt", "session", "token", "oauth", "password", "credential"},
-    "authorisation":     {"authorise", "authorize", "permission", "role", "access", "privilege",
-                          "restrict", "guard", "policy", "acl"},
-    "CRUD":              {"create", "read", "update", "delete", "add", "edit", "remove",
-                          "list", "get", "post", "put", "patch"},
-    "validation":        {"validate", "validation", "sanitise", "sanitize", "check",
-                          "constraint", "rule", "format", "required", "error"},
-    "state_management":  {"state", "store", "redux", "context", "observable", "reactive",
-                          "global", "local", "prop", "binding"},
-    "data_persistence":  {"save", "persist", "store", "database", "db", "cache",
-                          "repository", "storage", "load"},
-    "REST_API":          {"rest", "api", "http", "get", "post", "put", "patch", "delete",
-                          "endpoint", "resource", "json", "payload", "status"},
-    "error_handling":    {"error", "exception", "handle", "catch", "throw", "fault",
-                          "fail", "fallback", "retry", "log"},
-    "search_filter":     {"search", "filter", "sort", "query", "find", "lookup",
-                          "paginate", "pagination"},
-    "notifications":     {"notification", "notify", "alert", "toast", "remind", "send"},
-    "file_handling":     {"file", "upload", "download", "attachment", "image", "media",
-                          "export", "import", "pdf", "csv"},
+_CONCEPT_KEYWORDS_RAW = {
+    "authentication":   {"login", "logout", "signin", "signup", "authenticate", "auth",
+                         "jwt", "session", "token", "oauth", "password", "credential"},
+    "authorisation":    {"authorise", "authorize", "permission", "role", "access", "privilege",
+                         "restrict", "guard", "policy", "acl"},
+    "CRUD":             {"create", "read", "update", "delete", "add", "edit", "remove",
+                         "list", "get", "post", "put", "patch"},
+    "validation":       {"validate", "validation", "sanitise", "sanitize", "check",
+                         "constraint", "rule", "format", "required", "error"},
+    "state_management": {"state", "store", "redux", "context", "observable", "reactive",
+                         "global", "local", "prop", "binding"},
+    "data_persistence": {"save", "persist", "store", "database", "db", "cache",
+                         "repository", "storage", "load"},
+    "REST_API":         {"rest", "api", "http", "get", "post", "put", "patch", "delete",
+                         "endpoint", "resource", "json", "payload", "status"},
+    "error_handling":   {"error", "exception", "handle", "catch", "throw", "fault",
+                         "fail", "fallback", "retry", "log"},
+    "search_filter":    {"search", "filter", "sort", "query", "find", "lookup",
+                         "paginate", "pagination"},
+    "notifications":    {"notification", "notify", "alert", "toast", "remind", "send"},
+    "file_handling":    {"file", "upload", "download", "attachment", "image", "media",
+                         "export", "import", "pdf", "csv"},
     "testing": {
-        "strong": {"unit", "integration", "e2e", "mock", "stub", "coverage", "assert", "spec", "pytest", "xunit", "manual", "playwright"},
+        "strong": {"unit", "integration", "e2e", "mock", "stub", "coverage", "assert",
+                   "spec", "pytest", "xunit", "manual", "playwright"},
         "weak":   {"test", "testing", "verify", "check", "confirm"},
     },
-
-    "security":          {"security", "secure", "encrypt", "decrypt", "hash", "ssl",
-                          "tls", "xss", "csrf", "injection", "sanitise"},
-    "performance":       {"performance", "optimise", "optimize", "cache", "lazy",
-                          "load", "async", "concurrent", "speed", "efficient"},
+    "security":         {"security", "secure", "encrypt", "decrypt", "hash", "ssl",
+                         "tls", "xss", "csrf", "injection", "sanitise"},
+    "performance":      {"performance", "optimise", "optimize", "cache", "lazy",
+                         "load", "async", "concurrent", "speed", "efficient"},
 }
+
+# Stem all dictionaries once at startup
+STACK_KEYWORDS          = {k: stem_set(v) for k, v in _STACK_KEYWORDS_RAW.items()}
+IMPLEMENTATION_KEYWORDS = {k: stem_set(v) for k, v in _IMPLEMENTATION_KEYWORDS_RAW.items()}
+CONCEPT_KEYWORDS        = {k: stem_keyword_dict(v) for k, v in _CONCEPT_KEYWORDS_RAW.items()}
 
 # ---------------------------------------------------------------------------
 # NLP helpers
 # ---------------------------------------------------------------------------
 
-lemmatiser = WordNetLemmatizer()
 _stop_words = set(stopwords.words("english"))
 
+# Stem domain noise too so it matches stemmed tokens
 DOMAIN_NOISE = {
-    "message", "format", "display", "show", "get", "given",
-    "add", "fix", "make", "use", "need", "want", "relevant",
-    "existing", "correct", "current", "new", "old",
+    stemmer.stem(w) for w in {
+        "message", "format", "display", "show", "get", "given",
+        "add", "fix", "make", "use", "need", "want", "relevant",
+        "existing", "correct", "current", "new", "old",
+    }
 }
 
-def preprocess(text):
+def preprocess(text: str) -> list[str]:
+    """Lowercase → tokenise → stem → remove stop-words & domain noise."""
     tokens = word_tokenize(text.lower())
-    tokens = [t for t in tokens if re.match(r"[a-z]", t)]  # only strip punctuation first
-    tokens = [lemmatiser.lemmatize(t) for t in tokens]      # lemmatise BEFORE filtering
-    tokens = [t for t in tokens                             # then filter noise
+    tokens = [t for t in tokens if re.match(r"[a-z]", t)]
+    tokens = [stemmer.stem(t) for t in tokens]          # stem before filtering
+    tokens = [t for t in tokens
               if t not in _stop_words
               and t not in DOMAIN_NOISE]
     return tokens
 
 
-def _score_category(tokens, token_set, raw_text):
+def _score_category(tokens: list[str], token_set: set | dict, raw_text: str) -> float:
     """Handles both flat sets and strong/weak dicts."""
     if isinstance(token_set, dict):
-        # Strong/weak format — score them separately
         strong_hits = sum(1 for t in tokens if t in token_set["strong"])
         weak_hits   = sum(1 for t in tokens if t in token_set["weak"])
-        return strong_hits * 2 + weak_hits  # strong hits worth more
-    
-    # Original flat set logic
+        return strong_hits * 2 + weak_hits
+
     score = sum(1 for t in tokens if t in token_set)
     raw_lower = raw_text.lower()
     for kw in token_set:
@@ -150,11 +172,9 @@ def detect_explicit_stack(text: str) -> str | None:
 
 def categorise_stack(tokens: list[str], raw: str) -> dict:
     explicit = detect_explicit_stack(raw)
-
     if explicit:
         return {"stack_area": explicit, "source": "explicit"}
 
-    # Fall back to keyword inference
     fe = _score_category(tokens, STACK_KEYWORDS["frontend"], raw)
     be = _score_category(tokens, STACK_KEYWORDS["backend"], raw)
 
@@ -169,51 +189,42 @@ def categorise_stack(tokens: list[str], raw: str) -> dict:
 
 
 def categorise_implementation(tokens: list[str], raw: str) -> list[str]:
-    """Return a ranked list of implementation types detected."""
     scores = {
         impl: _score_category(tokens, kws, raw)
         for impl, kws in IMPLEMENTATION_KEYWORDS.items()
     }
-    # Keep only those with at least one hit, sorted by score
     detected = sorted(
         [(impl, s) for impl, s in scores.items() if s > 0],
-        key=lambda x: x[1],
-        reverse=True,
+        key=lambda x: x[1], reverse=True,
     )
     return [impl for impl, _ in detected]
 
-def categorise_concepts(tokens, raw):
+
+def categorise_concepts(tokens: list[str], raw: str) -> list[str]:
     scores = {}
     for concept, kws in CONCEPT_KEYWORDS.items():
         score = _score_category(tokens, kws, raw)
-        
-        # For strong/weak concepts, require at least one strong hit
+
         if isinstance(kws, dict):
             has_strong = any(t in kws["strong"] for t in tokens)
             if not has_strong:
-                continue  # skip — only weak hits, too ambiguous
-        
+                continue
+
         if score >= 1:
             scores[concept] = score
 
     return [c for c, _ in sorted(scores.items(), key=lambda x: x[1], reverse=True)]
 
+
 def clean_text(text: str) -> str:
-    text = re.sub(r"AC\d+[:,]?", "", text, flags=re.IGNORECASE)          # remove AC references
-    text = re.sub(r"[^\x00-\x7F]+", " ", text)      # remove emoji / non-ASCII
-    text = re.sub(r"[-•*]+\s*", " ", text)           # remove bullet markers
-    text = re.sub(r"\s+", " ", text)                 # normalise whitespace
+    text = re.sub(r"\bac[\s\-]?\d+[:,]?\b", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"[^\x00-\x7F]+", " ", text)
+    text = re.sub(r"[-•*]+\s*", " ", text)
+    text = re.sub(r"\s+", " ", text)
     return text.strip()
 
-def categorise_task(title: str, description: str = "") -> dict:
-    """
-    Main entry point. Returns a structured categorisation dict for a task.
 
-    Parameters
-    ----------
-    title       : Task title / summary
-    description : Optional longer description / acceptance criteria
-    """
+def categorise_task(title: str, description: str = "") -> dict:
     combined = clean_text(f"{title} {description}".strip())
     tokens = preprocess(combined)
 
@@ -224,10 +235,10 @@ def categorise_task(title: str, description: str = "") -> dict:
     return {
         "title": title,
         "stack_area": stack["stack_area"],
-        "stack_type": stack["source"],
+        "stack_source": stack["source"],
         "implementation_types": implementations,
         "core_concepts": concepts,
-        "tokens_used": tokens,  # useful for debugging / tuning
+        "tokens_used": tokens,
     }
 
 
@@ -239,7 +250,7 @@ def print_result(result: dict) -> None:
     print(f"\n{'=' * 60}")
     print(f"  Task : {result['title']}")
     print(f"{'=' * 60}")
-    print(f"  Stack area            : {result['stack_area']} ({result['stack_type']})")
+    print(f"  Stack area            : {result['stack_area']} ({result['stack_source']})")
     print(f"  Implementation types  : {', '.join(result['implementation_types']) or 'none detected'}")
     print(f"  Core concepts         : {', '.join(result['core_concepts']) or 'none detected'}")
     print(f"  Tokens (debug)        : {result['tokens_used']}")
@@ -281,7 +292,7 @@ SAMPLE_TASKS = [
         "Mock the repository layer and assert business logic behaves correctly. "
         "Cover edge cases for validation and error handling.",
     ),
-    ( # John samples
+    (
         "3 - Add Edit Validation (Backend and Frontend)",
         "Relevant AC's - AC3, AC4, AC5, AC6, AC7"
         "- Add all 'Create Task' validation to Editing Task."
@@ -289,7 +300,7 @@ SAMPLE_TASKS = [
     ),
     (
         "AC2: Error message wrong format",
-"""PROBLEM: Given email being 
+        """PROBLEM: Given email being
 😍😍😍😍😍😍@myemail.com we aren't getting correct error message. Getting "Invalid email or password" instead.
 
 Fix which error message is displayed.
@@ -302,7 +313,8 @@ Relevant AC's
     ),
     (
         "The password reset via email API",
-        "manual testing if password is correct, testing if password is correct Implement the existing API from .Net identity library"
+        "manual testing if password is correct, testing if password is correct "
+        "Implement the existing API from .Net identity library"
     ),
 ]
 
