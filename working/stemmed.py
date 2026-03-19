@@ -124,7 +124,7 @@ def categorise_stack(tokens, raw):
     explicit = detect_explicit_stack(raw)
 
     if explicit:
-        return {"stack_area": explicit, "source": "explicit"}
+        return {"stack_layer": explicit, "source": "explicit"}
 
     fe = score_category(tokens, STACK_KEYWORDS["frontend"], raw)
     be = score_category(tokens, STACK_KEYWORDS["backend"], raw)
@@ -136,7 +136,7 @@ def categorise_stack(tokens, raw):
     else:
         area = "frontend" if fe > be else "backend"
 
-    return {"stack_area": area, "source": "inferred"}
+    return {"stack_layer": area, "source": "inferred"}
 
 # categorise task implementation
 def categorise_implementation(tokens, raw):
@@ -185,7 +185,7 @@ def categorise_task(title: str, description: str = "") -> dict:
 
     return {
         "title": title,
-        "stack_area": stack["stack_area"],
+        "stack_layer": stack["stack_layer"],
         "stack_source": stack["source"],
         "implementation_types": implementations,
         "core_concepts": concepts,
@@ -195,15 +195,15 @@ def categorise_task(title: str, description: str = "") -> dict:
 # printer
 def print_result(result: dict) -> None:
     task_title = result['title']
-    stack_area = f"{result['stack_area']} ({result['stack_source']})"
+    stack_layer = f"{result['stack_layer']} ({result['stack_source']})"
     implementation_types = ', '.join(result['implementation_types']) or 'none detected'
     implementation_concepts = ', '.join(result['core_concepts']) or 'none detected'
 
-    print(f"\n{'=' * 60}")
     print(f"Task: '{task_title}'")
-    print(f"- Stack area:              {stack_area}")
+    print(f"- Stack layer:             {stack_layer}")
     print(f"- Implementation types:    {implementation_types}")
     print(f"- Implementation concepts: {implementation_concepts}")
+    print("")
     # print(f"- Tokens (debug)        : {result['tokens_used']}")
 
 
@@ -211,4 +211,3 @@ if __name__ == "__main__":
     for title, description in SAMPLE_TASKS:
         result = categorise_task(title, description)
         print_result(result)
-    print(f"\n{'=' * 60}\n")
