@@ -1,0 +1,40 @@
+# stack - determining layer of tech stack
+PLAIN_STACK_KEYWORDS = {
+    "frontend":         {"ui", "interface", "component", "button", "form", "modal", "page", "view", "template", "css", "style", "layout", "responsive", "display", "render", "react", "angular", "vue", "html", "dom", "client", "dashboard", "navbar", "sidebar", "popup", "toast", "table"},
+    "backend":          {"api", "endpoint", "controller", "service", "repository", "database", "db", "query", "server", "model", "schema", "migration", "route", "middleware", "authentication", "authorisation", "authorization", "jwt", "token", "password", "hash", "email", "schedule", "cron", "logic", "validation", "exception", "handler", "logging"}
+}
+
+# implementation - determining implementation areas
+PLAIN_IMPLEMENTATION_KEYWORDS = {
+    "controller":       {"controller", "route", "endpoint", "request", "response", "handler"},
+    "service":          {"service", "logic", "business", "process", "calculate", "compute"},
+    "repository":       {"repository", "repo", "dao", "database", "query", "crud", "persist", "store"},
+    "api":              {"api", "rest", "endpoint", "http", "request", "response", "payload", "json"},
+    "ui_component":     {"component", "button", "form", "modal", "navbar", "sidebar", "table", "input", "dropdown", "card", "page", "view", "layout", "widget"},
+    "model":            {"model", "entity", "schema", "class", "object", "dto", "struct"},
+    "migration":        {"migration", "migrate", "schema", "table", "column", "index", "seed"},
+    "middleware":       {"middleware", "interceptor", "filter", "guard", "pipe"},
+    "test":             {"test", "spec", "unit", "integration", "mock", "stub", "assert", "coverage"},
+    "config":           {"config", "configuration", "environment", "env", "setting", "setup"},
+}
+
+# conecpts - determining different concepts
+PLAIN_CONCEPT_KEYWORDS = {
+    "authentication":   {"login", "logout", "signin", "signup", "authenticate", "auth", "jwt", "session", "token", "oauth", "password", "credential"},
+    "authorisation":    {"authorise", "authorize", "permission", "role", "access", "privilege", "restrict", "guard", "policy", "acl"},
+    "CRUD":             {"create", "read", "update", "delete", "add", "edit", "remove", "list", "get", "post", "put", "patch"},
+    "validation":       {"validate", "validation", "sanitise", "sanitize", "check", "constraint", "rule", "format", "required", "error"},
+    "state_management": {"state", "store", "redux", "context", "observable", "reactive", "global", "local", "prop", "binding"},
+    "data_persistence": {"save", "persist", "store", "database", "db", "cache", "repository", "storage", "load"},
+    "api":              {"rest", "api", "http", "get", "post", "put", "patch", "delete", "endpoint", "resource", "json", "payload", "status"},
+    "error_handling":   {"error", "exception", "handle", "catch", "throw", "fault", "fail", "fallback", "retry", "log"},
+    "search_filter":    {"search", "filter", "sort", "query", "find", "lookup", "paginate", "pagination"},
+    "notifications":    {"notification", "notify", "alert", "toast", "remind", "send"},
+    "file_handling":    {"file", "upload", "download", "attachment", "image", "media", "export", "import", "pdf", "csv"},
+    "testing":          {
+                            "strong": {"unit", "integration", "e2e", "mock", "stub", "coverage", "assert", "spec", "pytest", "xunit", "manual", "playwright"},
+                            "weak":   {"test", "testing", "verify", "check", "confirm"},
+                        },
+    "security":         {"security", "secure", "encrypt", "decrypt", "hash", "ssl", "tls", "xss", "csrf", "injection", "sanitise"},
+    "performance":      {"performance", "optimise", "optimize", "cache", "lazy", "load", "async", "concurrent", "speed", "efficient"},
+}
