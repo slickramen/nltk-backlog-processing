@@ -1,4 +1,3 @@
-
 SAMPLE_TASKS = [
     (
         "As a user I can log into the application",
@@ -48,12 +47,11 @@ Relevant AC's
 
 - Add all "Create Task" validation to Editing Task.
 - Conduct Frontend and Backend testing
-"""
+""",
     ),
     (
         "The password reset via email API",
         "manual testing if password is correct, testing if password is correct "
-        "Implement the existing API from .Net identity library"
+        "Implement the existing API from .Net identity library",
     ),
 ]
-
