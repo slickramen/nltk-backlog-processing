@@ -21,16 +21,70 @@
 				<div class="panel">
 					<div class="panel-header">
 						<div class="heading">Input</div>
-						<div class="status-orb green"></div>
+						<!-- <div class="status-orb green"></div> -->
 					</div>
-					<div class="panel-body">Hi</div>
+					<div class="panel-body" style="padding: 0">
+						<form
+							id="task-form"
+							style="
+								flex: 1;
+								display: flex;
+								flex-direction: column;
+							"
+						>
+							<div class="form-wrapper">
+								<div class="field">
+									<label for="title"
+										>Task title
+										<span style="color: #ef4444"
+											>*</span
+										></label
+									>
+									<input
+										type="text"
+										name="title"
+										id="title"
+										placeholder="e.g Authorisation setup"
+									/>
+								</div>
+
+								<div class="field">
+									<label for="description"
+										>Task description</label
+									>
+									<textarea
+										id="description"
+										name="description"
+										rows="5"
+										placeholder="e.g. Setup authorisation API and middleware..."
+									></textarea>
+								</div>
+							</div>
+
+							<div class="input-area-bottom">
+								<button
+									class="btn btn-secondary"
+									id="clear-btn"
+								>
+									Clear
+								</button>
+								<button
+									class="btn btn-primary"
+									id="submit-btn"
+									type="submit"
+								>
+									Submit Task Information
+								</button>
+							</div>
+						</form>
+					</div>
 				</div>
 				<div class="panel">
 					<div class="panel-header">
 						<div class="heading">Output</div>
 					</div>
 					<div class="panel-body">
-						<div class="empty-state">
+						<div class="empty-state show" id="output-empty-state">
 							<img
 								class="empty-state-icon"
 								src="{{ url_for('static', filename='search.png') }}"
@@ -41,9 +95,100 @@
 								see some output.
 							</span>
 						</div>
+
+						<div class="form-wrapper hide" id="output-data">
+							<div class="field">
+								<label>Task title</label>
+								<div
+									class="input-display empty"
+									id="display-title"
+								>
+									—
+								</div>
+							</div>
+
+							<div class="field">
+								<label>Task description</label>
+								<textarea
+									class="input-display empty"
+									id="display-description"
+									readonly
+								>
+—</textarea
+								>
+							</div>
+
+							<div class="field">
+								<label>Task stack</label>
+
+								<span id="display-techstack" class="stack-label"
+									>—</span
+								>
+								<span
+									class="stack-source"
+									id="display-stack-source"
+								>
+									—
+								</span>
+							</div>
+
+							<div class="field">
+								<label
+									>Task implementation types
+									<span
+										class="count-label"
+										id="display-implementation-count"
+									>
+										0
+									</span>
+								</label>
+
+								<div
+									class="tag-container"
+									id="display-implementations"
+								></div>
+							</div>
+
+							<div class="field">
+								<label
+									>Task concept types
+									<span
+										class="count-label"
+										id="display-concept-count"
+									>
+										0
+									</span>
+								</label>
+
+								<div
+									class="tag-container"
+									id="display-concepts"
+								></div>
+							</div>
+
+							<div class="field">
+								<label
+									>Task tokens
+
+									<span
+										class="count-label"
+										id="display-token-count"
+									>
+										0
+									</span>
+								</label>
+
+								<div
+									class="tag-container"
+									id="display-tokens"
+								></div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</body>
+
+	<script src="{{ url_for('static', filename='script/form-submit.js') }}"></script>
 </html>

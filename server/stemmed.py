@@ -220,6 +220,7 @@ def categorise_task(title: str, description: str = "") -> dict:
 
     return {
         "title": title,
+        "description": description,
         "stack_layer": stack["stack_layer"],
         "stack_source": stack["source"],
         "implementation_types": implementations,

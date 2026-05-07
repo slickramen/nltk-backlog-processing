@@ -18,13 +18,13 @@ def hello_world2():
     return "Hello, World2!"
 
 
-@app.route(BASEPATH + "/categorise-task")
+@app.route(BASEPATH + "/categorise-task", methods=["POST"])
 def handle_categorise_task():
     data = request.get_json()
-    name = data.get("name")
+    title = data.get("title")
     desc = data.get("description")
 
-    categorised_task = categorise_task(name, desc)
+    categorised_task = categorise_task(title, desc)
     return {"received": categorised_task}
 
 

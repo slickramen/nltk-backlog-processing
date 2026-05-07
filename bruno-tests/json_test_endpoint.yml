@@ -4,7 +4,7 @@ info:
   seq: 2
 
 http:
-  method: GET
+  method: POST
   url: "{{BASE_PATH}}/categorise-task"
   body:
     type: json
