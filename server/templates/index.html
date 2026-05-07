@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+	<head>
+		<title>{{ title }}</title>
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='style.css') }}"
+		/>
+	</head>
+	<body>
+		<div class="page-wrapper">
+			<div class="header">
+				<h1 class="title">Scrumboard Recommender API</h1>
+				<span class="subtitle"
+					>Task Categorisation and Recommendation</span
+				>
+			</div>
+			<hr />
+
+			<div class="panel-layout">
+				<div class="panel">
+					<div class="panel-header">
+						<div class="heading">Input</div>
+						<div class="status-orb green"></div>
+					</div>
+					<div class="panel-body">Hi</div>
+				</div>
+				<div class="panel">
+					<div class="panel-header">
+						<div class="heading">Output</div>
+					</div>
+					<div class="panel-body">
+						<div class="empty-state">
+							<img
+								class="empty-state-icon"
+								src="{{ url_for('static', filename='search.png') }}"
+							/>
+							<span class="empty-title">No data yet</span>
+							<span class="empty-subtitle">
+								Enter some input details on the left panel to
+								see some output.
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

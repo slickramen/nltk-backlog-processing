@@ -1,0 +1,145 @@
+@font-face {
+	font-family: "Inter";
+	src: url("../Inter.ttf");
+}
+
+* {
+	font-family: "Inter", Arial, Helvetica, sans-serif;
+}
+
+:root {
+	--color-text-standard: #1c1c1c;
+	--color-text-subtle: #3b3b3b;
+
+	--color-border: #ccc;
+
+	--pad-025: 2px;
+	--pad-050: 4px;
+	--pad-100: 8px;
+	--pad-150: 12px;
+	--pad-200: 16px;
+	--pad-400: 32px;
+}
+
+html,
+body,
+#root {
+	height: 100%;
+	margin: 0;
+	font-size: 14px;
+	color: var(--color-text-standard);
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+}
+
+.page-wrapper {
+	display: flex;
+	flex-direction: column;
+	padding: var(--pad-400);
+	gap: var(--pad-100);
+	flex: 1;
+}
+
+.header {
+	display: flex;
+	flex-direction: column;
+	padding: 0 var(--pad-100);
+	gap: var(--pad-050);
+}
+
+.title {
+	font-weight: 600;
+	font-size: 2em;
+	margin: 0;
+}
+
+.heading {
+	font-weight: 600;
+	font-size: 1.25em;
+	margin: 0;
+}
+
+.subtitle {
+	color: var(--color-text-subtle);
+}
+
+hr {
+	width: 100%;
+	height: 1px;
+	border: none;
+	background-color: var(--color-border);
+}
+
+.panel-layout {
+	display: flex;
+	flex-direction: row;
+	gap: var(--pad-100);
+	height: 100%;
+}
+
+.panel {
+	border: 1px solid var(--color-border);
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.panel-header {
+	display: flex;
+	flex-direction: row;
+	padding: var(--pad-100);
+	border-bottom: 1px solid var(--color-border);
+	justify-content: space-between;
+	align-items: center;
+}
+
+.panel-body {
+	padding: var(--pad-100);
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.status-orb {
+	width: 8px;
+	height: 8px;
+	border-radius: 8px;
+	background-color: #25a9fb;
+
+	margin: 6px;
+}
+
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	gap: var(--pad-100);
+
+	align-items: center;
+	justify-content: center;
+	opacity: 0.5;
+	flex: 1;
+
+	padding: var(--pad-200);
+	padding-top: 32px;
+	padding-bottom: 100px;
+}
+
+.empty-title {
+	font-size: 1.5em;
+	font-weight: 600;
+	text-align: center;
+}
+
+.empty-subtitle {
+	text-align: center;
+}
+
+.empty-state-icon {
+	width: 30%;
+	min-width: 100px;
+	max-width: 200px;
+}

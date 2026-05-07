@@ -1,6 +1,6 @@
 from stemmed import categorise_task
 
-from flask import Flask, request
+from flask import Flask, request, render_template
 
 BASEPATH = "/recommender/v1"
 
@@ -8,9 +8,9 @@ app = Flask(__name__)
 
 
 # TEST ENDPOINTS
-@app.route(BASEPATH + "/")
-def hello_world():
-    return "Hello, World!"
+@app.route("/")
+def home():
+    return render_template("index.html", title="Welcome Page")
 
 
 @app.route(BASEPATH + "/test")
