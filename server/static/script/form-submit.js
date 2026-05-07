@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	document
-		.querySelector("#submit-btn")
-		.addEventListener("click", function (e) {
+		.querySelector("#task-form")
+		.addEventListener("submit", function (e) {
 			e.preventDefault();
 			const form = document.getElementById("task-form");
 			if (!form) {
