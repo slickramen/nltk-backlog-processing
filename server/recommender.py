@@ -4,7 +4,7 @@ Basic python implementation of recommender system. The final system will be impl
 Each user has a few maps of "skills" aligning to the different areas we want to recommend tasks based off
 """
 
-from stemmed import categorise_task
+from server.stemmed import categorise_task
 from py.sample import SAMPLE_TASKS
 from py.language_dict import PLAIN_IMPLEMENTATION_KEYWORDS as P_I
 from py.language_dict import PLAIN_CONCEPT_KEYWORDS as P_C

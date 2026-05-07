@@ -1,0 +1,22 @@
+info:
+  name: json_test_endpoint
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{BASE_PATH}}/categorise-task"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "As a user I can log into the application",
+        "description": "Implement a login page with email/password form. Validate credentials against the database. Return a JWT token on success and handle authentication errors."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

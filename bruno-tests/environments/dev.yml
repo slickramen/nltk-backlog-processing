@@ -1,0 +1,4 @@
+name: dev
+variables:
+  - name: BASE_PATH
+    value: http://localhost:5000/recommender/v1
