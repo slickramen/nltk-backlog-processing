@@ -4,7 +4,7 @@ function setDisplay(id, value) {
 		el.textContent = value;
 		el.classList.remove("empty");
 	} else {
-		el.textContent = "—";
+		el.textContent = "No content";
 		el.classList.add("empty");
 	}
 }
@@ -76,12 +76,16 @@ document.addEventListener("DOMContentLoaded", function () {
 					document.querySelector("#display-concept-count").innerHTML =
 						response.received.core_concepts.length;
 
-					response.received.core_concepts.forEach((tag) => {
-						const tagDiv = document.createElement("div");
-						tagDiv.textContent = tag;
-						tagDiv.classList.add("tag");
-						conceptContainer.appendChild(tagDiv);
-					});
+					if (response.received.core_concepts.length > 0) {
+						response.received.core_concepts.forEach((tag) => {
+							const tagDiv = document.createElement("div");
+							tagDiv.textContent = tag;
+							tagDiv.classList.add("tag");
+							conceptContainer.appendChild(tagDiv);
+						});
+					} else {
+						conceptContainer.innerHTML = `<span class="empty-label">No concepts</span>`;
+					}
 
 					// Reset and display impls
 					const implContainer = document.querySelector(
@@ -93,12 +97,18 @@ document.addEventListener("DOMContentLoaded", function () {
 						"#display-implementation-count",
 					).innerHTML = response.received.implementation_types.length;
 
-					response.received.implementation_types.forEach((tag) => {
-						const tagDiv = document.createElement("div");
-						tagDiv.textContent = tag;
-						tagDiv.classList.add("tag");
-						implContainer.appendChild(tagDiv);
-					});
+					if (response.received.implementation_types.length > 0) {
+						response.received.implementation_types.forEach(
+							(tag) => {
+								const tagDiv = document.createElement("div");
+								tagDiv.textContent = tag;
+								tagDiv.classList.add("tag");
+								implContainer.appendChild(tagDiv);
+							},
+						);
+					} else {
+						implContainer.innerHTML = `<span class="empty-label">No implementations</span>`;
+					}
 
 					// Reset and display tokens
 					const tokenContainer =
@@ -108,12 +118,16 @@ document.addEventListener("DOMContentLoaded", function () {
 					document.querySelector("#display-token-count").innerHTML =
 						response.received.tokens_used.length;
 
-					response.received.tokens_used.forEach((tag) => {
-						const tagDiv = document.createElement("div");
-						tagDiv.textContent = tag;
-						tagDiv.classList.add("tag");
-						tokenContainer.appendChild(tagDiv);
-					});
+					if (response.received.tokens_used.length > 0) {
+						response.received.tokens_used.forEach((tag) => {
+							const tagDiv = document.createElement("div");
+							tagDiv.textContent = tag;
+							tagDiv.classList.add("tag");
+							tokenContainer.appendChild(tagDiv);
+						});
+					} else {
+						tokenContainer.innerHTML = `<span class="empty-label">No tokens</span>`;
+					}
 				})
 				.catch((err) => {
 					console.error("Error:", err);

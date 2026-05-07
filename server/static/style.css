@@ -379,3 +379,13 @@ textarea.input-display {
 	background-color: var(--color-surface-sunken-deep);
 	color: white;
 }
+
+.inline-label {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--pad-100);
+}
+
+.empty-label {
+	color: var(--color-text-subtlest);
+}
