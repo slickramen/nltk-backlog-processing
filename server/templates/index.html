@@ -86,15 +86,16 @@
 					</div>
 					<div class="panel-body">
 						<div class="empty-state show" id="output-empty-state">
-							<img
-								class="empty-state-icon"
-								src="{{ url_for('static', filename='search.png') }}"
-							/>
 							<span class="empty-title">No data yet</span>
 							<span class="empty-subtitle">
 								Enter some input details on the left panel to
 								see some output.
 							</span>
+						</div>
+
+						<div class="empty-state hide" id="output-loading-state">
+							<span class="empty-title">Loading output</span>
+							<span class="empty-subtitle"> Sit tight! </span>
 						</div>
 
 						<div class="form-wrapper hide" id="output-data">
@@ -168,24 +169,6 @@
 								<div
 									class="tag-container"
 									id="display-concepts"
-								></div>
-							</div>
-
-							<div class="field">
-								<label class="inline-label"
-									>Task tokens
-
-									<span
-										class="count-label"
-										id="display-token-count"
-									>
-										0
-									</span>
-								</label>
-
-								<div
-									class="tag-container"
-									id="display-tokens"
 								></div>
 							</div>
 						</div>

@@ -11,6 +11,7 @@ function setDisplay(id, value) {
 
 document.addEventListener("DOMContentLoaded", function () {
 	const empty = document.querySelector("#output-empty-state");
+	const loading = document.querySelector("#output-loading-state");
 	const outputData = document.querySelector("#output-data");
 
 	document.querySelector("#clear-btn").addEventListener("click", function () {
@@ -23,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 
 		empty.classList.add("show");
+		loading.classList.remove("show");
 		outputData.classList.add("hide");
 	});
 
@@ -42,6 +44,10 @@ document.addEventListener("DOMContentLoaded", function () {
 				return;
 			}
 
+			empty.classList.remove("show");
+			loading.classList.add("show");
+			outputData.classList.add("hide");
+
 			fetch("/recommender/v1/categorise-task", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -52,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					console.log(response);
 
 					empty.classList.remove("show");
+					loading.classList.remove("show");
 					outputData.classList.remove("hide");
 
 					setDisplay("display-title", response.received.title);
@@ -108,25 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
 						);
 					} else {
 						implContainer.innerHTML = `<span class="empty-label">No implementations</span>`;
-					}
-
-					// Reset and display tokens
-					const tokenContainer =
-						document.querySelector("#display-tokens");
-					tokenContainer.innerHTML = "";
-
-					document.querySelector("#display-token-count").innerHTML =
-						response.received.tokens_used.length;
-
-					if (response.received.tokens_used.length > 0) {
-						response.received.tokens_used.forEach((tag) => {
-							const tagDiv = document.createElement("div");
-							tagDiv.textContent = tag;
-							tagDiv.classList.add("tag");
-							tokenContainer.appendChild(tagDiv);
-						});
-					} else {
-						tokenContainer.innerHTML = `<span class="empty-label">No tokens</span>`;
 					}
 				})
 				.catch((err) => {
